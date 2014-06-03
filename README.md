@@ -4,7 +4,7 @@ LAS2peer-File-Service
 This service allows file hosting.
 Files and directories can be placed into the ./files directory and are then accessible ower the webConnector.
 The files stay on the machine, they do not become part of the p2p network shared storage.
-Currently only no binary files are spported. But you could already for example host static/javascript based webpages.
+Currently only no binary files are spported. But you could already, for example, host static/javascript based webpages.
 
 For testing build with "ant all" and start ./bin/start_network
 The Service can then be accessed directly over the browser (no login required):
