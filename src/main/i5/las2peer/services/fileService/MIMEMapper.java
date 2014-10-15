@@ -1,6 +1,7 @@
 package i5.las2peer.services.fileService;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 /**
@@ -18,8 +19,14 @@ public class MIMEMapper
     private void initMapping()
     {
 
-        String mimeTypes=LocalFileManager.getFile(new File("./etc/MIME.txt"));
-        if(mimeTypes==null)//backup plan if no file
+		String mimeTypes= null;
+		try{
+			mimeTypes = new String(LocalFileManager.getFile(new File("./etc/MIME.txt")), "UTF-8");
+		}catch (UnsupportedEncodingException e){
+			mimeTypes=null;
+		}
+
+		if(mimeTypes==null)//backup plan if no file
         {
             typeMapping.put("html","text/html");
             typeMapping.put("js","text/javascript");

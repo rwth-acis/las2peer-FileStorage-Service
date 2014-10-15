@@ -36,7 +36,7 @@ public class LocalFileManager
         return manager;
     }
 
-    public static String getFile(String file)
+    public static byte[] getFile(String file)
     {
         getManager();
        /* if(file.contains(".."))//ignore
@@ -76,34 +76,21 @@ public class LocalFileManager
      * @param file file to read
      * @return content of file
      */
-    public static String getFile(File file)
+    public static byte[] getFile(File file)
     {
 
+		byte[] result=new byte[]{};
 
-        String content = null;
-        FileReader reader = null;
         try
         {
-            try {
-                reader = new FileReader(file);
-                char[] chars = new char[(int) file.length()];
-                reader.read(chars);
-                content = new String(chars);
-                reader.close();
-            }
-
-            finally {
-                if(reader!=null)
-                    reader.close();
-            }
+            result=Files.readAllBytes(file.toPath());
         }
         catch(IOException e)
         {
 
         }
 
-
-        return content;
+        return result;
     }
     /**
      * Writes a string to a file

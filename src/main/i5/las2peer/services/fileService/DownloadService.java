@@ -12,6 +12,7 @@ import i5.las2peer.security.UserAgent;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -238,12 +239,25 @@ public class DownloadService extends Service {
         if (lastDot>0&& path.charAt(lastDot-1)!='.')//file
         {
 
-            String fileContents= getFile(path);
+            byte[] fileContents= getFile(path);
+			String fileContentsString="";
             String getMIME= MIMEMapper.getMIME(path);
             if(fileContents!=null)
             {
-                //fileContents= Base64.encodeBase64String(fileContents.getBytes());
-                response =new HttpResponse(fileContents, 200);
+				if(getMIME.startsWith("text"))
+				{
+					try{
+						fileContentsString= new String(fileContents,"UTF-8");
+					}catch (UnsupportedEncodingException e){
+						fileContentsString="";
+					}
+				}
+				else
+				{
+
+					fileContentsString= "data:"+getMIME+";base64,"+Base64.encodeBase64String(fileContents);
+				}
+                response =new HttpResponse(fileContentsString, 200);
                 response.setHeader("content-type",getMIME);
             }
             else
@@ -267,12 +281,9 @@ public class DownloadService extends Service {
         return response;
     }
 
-    private String getFile(String path)
+    private byte[] getFile(String path)
     {
-
-
         return LocalFileManager.getFile(path);
-
     }
     private String getDir(String path)
     {
