@@ -28,24 +28,14 @@ public class DownloadService extends Service {
 	}
 
 	/**
-	 * This method is needed for every RESTful application in LAS2peer.
+	 * This method is needed for every RESTful application in LAS2peer. There is no need to change!
 	 * 
 	 * @return the mapping
 	 */
-	public String getRESTMapping()
-	{
+	public String getRESTMapping() {
 		String result = "";
-		/*try {
-		    result= RESTMapper.getMethodsAsXML(this.getClass());
-		    //LocalFileManager.writeFile("T:/mapping.xml",result);
-		} catch (Exception e) {
-
-		    e.printStackTrace();
-		}*/
-
 		try {
-			result = RESTMapper.mergeXMLs(RESTMapper.readAllXMLFromDir("./etc/restXML"));
-			// LocalFileManager.writeFile("T:/mapping.xml",result);
+			result = RESTMapper.getMethodsAsXML(this.getClass());
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -292,27 +282,14 @@ public class DownloadService extends Service {
 		if (files == null)
 			return null;
 		if (path.trim().length() > 0)
-			sb.append("<a href=\"../\">..</a><br>");
+			sb.append("<a href=\"../\">..</a><br/>");
 		for (String file : files)
 		{
-
 			sb.append("<a href=\"");
-
-			/* if(path.trim().length()>0)
-			 {
-			     int index=path.lastIndexOf("/");
-			     sb.append(path.substring(index+1)).append("/");
-
-
-			 }
-			 else
-			     sb.append("./");*/
-
 			sb.append(file);
 			if (!file.contains("."))
 				sb.append("/");
 			sb.append("\">").append(file).append("</a><br>");
-
 		}
 		return sb.toString();
 
