@@ -16,5 +16,5 @@
 	<classpathentry kind="lib" path="lib/mail-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/nimbus-jose-jwt-2.26.jar"/>
 	<classpathentry kind="lib" path="lib/oauth2-oidc-sdk-3.3.jar"/>
-	<classpathentry kind="output" path="tmp/classes"/>
+	<classpathentry kind="output" path="output"/>
 </classpath>
