@@ -114,7 +114,7 @@ public class DownloadServiceTest
 		{
 			c.setLogin(Long.toString(testAgent.getId()), testPass);
 			// ClientResponse result=c.sendRequest("GET", mainPath +"validate", "");
-			// assertEquals(200, result.getHttpCode());
+			// assertEquals(HttpURLConnection.HTTP_OK, result.getHttpCode());
 
 		} catch (Exception e)
 		{

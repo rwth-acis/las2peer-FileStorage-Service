@@ -1,5 +1,11 @@
 package i5.las2peer.services.fileService;
 
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.HttpResponse;
 import i5.las2peer.restMapper.RESTMapper;
@@ -7,11 +13,6 @@ import i5.las2peer.restMapper.annotations.GET;
 import i5.las2peer.restMapper.annotations.Path;
 import i5.las2peer.restMapper.annotations.PathParam;
 import i5.las2peer.restMapper.annotations.Version;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * 
@@ -246,12 +247,12 @@ public class DownloadService extends Service {
 
 					fileContentsString = "data:" + getMIME + ";base64," + Base64.encodeBase64String(fileContents);
 				}
-				response = new HttpResponse(fileContentsString, 200);
+				response = new HttpResponse(fileContentsString, HttpURLConnection.HTTP_OK);
 				response.setHeader("content-type", getMIME);
 			}
 			else
 			{
-				response = new HttpResponse("No such file: " + path, 404);
+				response = new HttpResponse("No such file: " + path, HttpURLConnection.HTTP_NOT_FOUND);
 			}
 		}
 		else// dir
@@ -259,12 +260,12 @@ public class DownloadService extends Service {
 			String dirContents = getDir(path);
 			if (dirContents != null)
 			{
-				response = new HttpResponse(dirContents, 200);
+				response = new HttpResponse(dirContents, HttpURLConnection.HTTP_OK);
 				response.setHeader("content-type", "text/html");
 			}
 			else
 			{
-				response = new HttpResponse("No such directory: " + path, 404);
+				response = new HttpResponse("No such directory: " + path, HttpURLConnection.HTTP_NOT_FOUND);
 			}
 		}
 		return response;
