@@ -13,3 +13,4 @@ etc/ivy/ivy.jar
 *.iml
 /files
 /output/
+/database
