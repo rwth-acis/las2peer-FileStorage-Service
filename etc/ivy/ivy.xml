@@ -7,5 +7,11 @@
     <dependencies>
         <dependency org="i5" name="las2peer" rev="0.3-SNAPSHOT" />		 
         <dependency org="i5" name="las2peer-web-connector" rev="0.3-SNAPSHOT"/>
+        <!-- json parsing and writing -->
+        <dependency org="org.glassfish" name="javax.json" rev="1.0.4"/>
+        <!-- database implementation -->
+        <dependency org="com.h2database" name="h2" rev="1.4.192"/>
+        <!-- database migration, see https://flywaydb.org -->
+        <dependency org="org.flywaydb" name="flyway-core" rev="4.0.3"/>
     </dependencies>
 </ivy-module>

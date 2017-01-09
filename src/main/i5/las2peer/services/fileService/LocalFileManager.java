@@ -93,8 +93,9 @@ public class LocalFileManager
 	 * @param content what to write into the file
 	 * @throws IOException
 	 */
-	public static void writeFile(String file, String content) throws IOException
+	public static void writeFile(File file, String content) throws IOException
 	{
+		file.getParentFile().mkdirs();
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(file, "UTF-8");

@@ -1,19 +1,25 @@
 package i5.las2peer.services.fileService;
 
-import static org.junit.Assert.fail;
 import i5.las2peer.p2p.LocalNode;
 import i5.las2peer.security.ServiceAgent;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.testing.MockAgentFactory;
 import i5.las2peer.webConnector.WebConnector;
+import i5.las2peer.webConnector.client.ClientResponse;
 import i5.las2peer.webConnector.client.MiniClient;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 
 /**
  * Example Test Class demonstrating a basic JUnit test structure.
@@ -35,8 +41,6 @@ public class DownloadServiceTest
 	private static final String testPass = "adamspass";
 
 	private static final String testServiceClass = "i5.las2peer.services.fileService.DownloadService";
-
-//	private static final String mainPath = "files/";
 
 	/**
 	 * Called before the tests start.
@@ -64,7 +68,7 @@ public class DownloadServiceTest
 		connector = new WebConnector(true, HTTP_PORT, false, 1000);
 		connector.setLogStream(new PrintStream(logStream));
 		connector.start(node);
-		Thread.sleep(1000); // wait a second for the connector to become ready
+		Thread.sleep(100); // wait a second for the connector to become ready
 		testAgent = MockAgentFactory.getAdam();
 
 		connector.updateServiceList();
@@ -72,7 +76,7 @@ public class DownloadServiceTest
 		try
 		{
 			System.out.println("waiting..");
-			Thread.sleep(10000);
+			Thread.sleep(6000);
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();
@@ -124,4 +128,26 @@ public class DownloadServiceTest
 
 	}
 
+	@Test
+	public void testAPI() {
+		MiniClient c = new MiniClient();
+		c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+		try {
+			c.setLogin(Long.toString(testAgent.getId()), testPass);
+		} catch (UnsupportedEncodingException e) {
+			fail(e.getMessage());
+		}
+		ClientResponse res = c.sendRequest("PUT", "files/789/Windows%20XP/0.4/myApp.exe", "abcde");
+		assertEquals(HttpURLConnection.HTTP_CREATED, res.getHttpCode());
+		res = c.sendRequest("PUT", "files/789/Windows%20XP/1.5/myApp.exe", "fghij");
+		assertEquals(HttpURLConnection.HTTP_CREATED, res.getHttpCode());
+		res = c.sendRequest("GET", "files/789/Windows%20XP/0.4", "");
+		assertEquals(HttpURLConnection.HTTP_OK, res.getHttpCode());
+		assertEquals("abcde"+/*MiniClient specific https://github.com/rwth-acis/las2peer-WebConnector/blob/c29604e3d22d43fccd6766018c29fae588113a12/src/main/java/i5/las2peer/webConnector/client/MiniClient.java#L117*/"\r"
+				, res.getResponse());
+		res = c.sendRequest("GET", "files/789", "");
+		assertEquals(HttpURLConnection.HTTP_OK, res.getHttpCode());
+		assertEquals(DownloadServiceHelper.stringToJson("{\"Windows XP\":{\"0.4\":{\"name\":\"myApp.exe\",\"size\":5},\"1.5\":{\"name\":\"myApp.exe\",\"size\":5}}}")
+			, DownloadServiceHelper.stringToJson(res.getResponse()));
+	}
 }
