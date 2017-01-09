@@ -16,14 +16,19 @@ public class DatabaseManager {
     private String jdbcUrl;
     private String jdbcSchema;
 
+    private String migrationPath;
+    private String backupPath;
+
     public DatabaseManager(String jdbcLogin, String jdbcPass, String jdbcUrl,
-                           String jdbcSchema) {
+                           String jdbcSchema, String migrationPath, String backupPath) {
         this.jdbcLogin = jdbcLogin;
         this.jdbcPass = jdbcPass;
         this.jdbcUrl = jdbcUrl;
         this.jdbcSchema = jdbcSchema;
         if (!jdbcUrl.startsWith("jdbc:h2:"))
             throw new IllegalArgumentException("Only compatible with h2 databases, invalid url: "+jdbcUrl);
+        this.migrationPath = migrationPath;
+        this.backupPath = backupPath;
     }
 
     private Connection getConnection() throws SQLException {
@@ -35,7 +40,7 @@ public class DatabaseManager {
             Flyway flyway = new Flyway();
             flyway.setDataSource(jdbcUrl, jdbcLogin, jdbcPass);
             flyway.setSchemas(jdbcSchema);
-            flyway.setLocations("filesystem:./etc/db_migration");
+            flyway.setLocations("filesystem:"+migrationPath);
             flyway.migrate();
             migrated = true;
         }
@@ -50,10 +55,10 @@ public class DatabaseManager {
     }
 
     public ResultSet query(String sql, Object... arguments) throws SQLException {
-       PreparedStatement pstmt = getConnection().prepareStatement(sql);
-       for (int i=0 ; i<arguments.length ; i++)
-           pstmt.setObject(i+1, arguments[i]);
-       return pstmt.executeQuery();
+        PreparedStatement pstmt = getConnection().prepareStatement(sql);
+        for (int i=0 ; i<arguments.length ; i++)
+            pstmt.setObject(i+1, arguments[i]);
+        return pstmt.executeQuery();
     }
 
     public int update(String sql, Object... arguments) throws SQLException {
@@ -66,13 +71,13 @@ public class DatabaseManager {
     public boolean backup() throws SQLException {
         Statement stmt = getConnection().createStatement( );
         // h2 specific
-        return stmt.execute( "SCRIPT DROP TO 'database/backup.sql'" );
+        return stmt.execute( "SCRIPT DROP TO '"+backupPath+"/backup.sql'" );
     }
 
     public boolean restore() throws SQLException {
         Statement stmt = getConnection().createStatement( );
         // h2 specific
-        return stmt.execute( "RUNSCRIPT FROM 'database/backup.sql'" );
+        return stmt.execute( "RUNSCRIPT FROM '"+backupPath+"/backup.sql'" );
     }
 
     /*

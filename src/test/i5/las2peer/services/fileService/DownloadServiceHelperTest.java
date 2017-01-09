@@ -29,10 +29,10 @@ public class DownloadServiceHelperTest {
     // }
 
 
-@Test
+    @Test
     public void testListApps() {
         try {
-            DatabaseManager dm = new DatabaseManager("sa", "", "jdbc:h2:mem:downloadservicehelpertest_0;DB_CLOSE_DELAY=-1", "testSchema");
+            DatabaseManager dm = new DatabaseManager("sa", "", "jdbc:h2:mem:downloadservicehelpertest_0;DB_CLOSE_DELAY=-1", "testSchema", "etc/db_migration", "database");
             DownloadServiceHelper dsh = new DownloadServiceHelper(dm);
 
             dm.update("INSERT INTO files VALUES (2,'a','b','c','d',7)");
@@ -48,7 +48,7 @@ public class DownloadServiceHelperTest {
 
     @Test
     public void testPutGetList() {
-        DatabaseManager dm = new DatabaseManager("sa", "", "jdbc:h2:mem:downloadservicehelpertest_1;DB_CLOSE_DELAY=-1", "testSchema");
+        DatabaseManager dm = new DatabaseManager("sa", "", "jdbc:h2:mem:downloadservicehelpertest_1;DB_CLOSE_DELAY=-1", "testSchema", "etc/db_migration", "database");
         DownloadServiceHelper dsh = new DownloadServiceHelper(dm);
 
         assertEquals(HttpURLConnection.HTTP_CREATED

@@ -27,7 +27,7 @@ public class DownloadService extends Service {
 
 	public DownloadService() {
 		setFieldValues();
-		this.dsh = new DownloadServiceHelper(new DatabaseManager(jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema));
+		this.dsh = new DownloadServiceHelper(new DatabaseManager(jdbcLogin, jdbcPass, jdbcUrl, jdbcSchema, "etc/db_migration", "database"));
 	}
 
 	/**
